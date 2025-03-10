@@ -1,7 +1,6 @@
 import React from 'react';
 import {Outlet} from "react-router-dom";
 import Header from "./Header/DropDown";
-import CategoryDropdown from "./Header/DropDown";
 
 const MainLayaout = () => {
     return (

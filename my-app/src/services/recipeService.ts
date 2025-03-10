@@ -11,7 +11,7 @@ import axios from "axios";
                 const response = await axios.get(`/api/recipes/search`, {
                     params: { query },
                 });
-                return response.data; // Повертаємо знайдені страви
+                return response.data;
             } catch (error) {
                 console.error("Error fetching meals by query:", error);
                 throw new Error("Failed to fetch meals");
@@ -36,14 +36,14 @@ import axios from "axios";
             throw new Error("Error fetching meals by category");
         }
     },
-    // mealServices.ts
+
      getAll : async () => {
         try {
-            const response = await axios.get("https://www.themealdb.com/api/json/v1/1/search.php?s="); // Отримуємо всі страви
-            return {meals: response.data.meals}; // Повертаємо результат
+            const response = await axios.get("https://www.themealdb.com/api/json/v1/1/search.php?s=");
+            return {meals: response.data.meals};
         } catch (error) {
             console.error("Error fetching meals:", error);
-            return {meals: []}; // Якщо сталася помилка, повертаємо порожній масив
+            return {meals: []};
         }
     }
 };

@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import RecipeCard from "./Recipe"; // Ваш компонент для відображення страв
+import RecipeCard from "./Recipe";
+import Pagination from "../../pagination/Pagination";
+
 
 const Recipes = () => {
-    const [query, setQuery] = useState<string>(""); // Для пошукового запиту
-    const [meals, setMeals] = useState<any[]>([]); // Для результатів пошуку
-    const [allMeals, setAllMeals] = useState<any[]>([]); // Для всіх страв
+    const [query, setQuery] = useState<string>("");
+    const [meals, setMeals] = useState<any[]>([]);
+    const [allMeals, setAllMeals] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(1); // Поточна сторінка
-    const [itemsPerPage] = useState(6); // Кількість елементів на сторінці
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(6);
 
     useEffect(() => {
         const fetchMeals = async () => {
             setIsLoading(true);
-            setError(null); // очищаємо помилки при новому пошуку
+            setError(null);
 
             try {
-                // Завантажуємо всі страви при першому рендерингу
                 const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=`);
-                setAllMeals(response.data.meals); // Зберігаємо всі страви
+                setAllMeals(response.data.meals);
             } catch (err) {
                 console.error("Error fetching meals:", err);
                 setError("Failed to fetch meals");
@@ -33,28 +34,24 @@ const Recipes = () => {
 
     useEffect(() => {
         if (!query) {
-            // Якщо поле пошуку порожнє, відображаємо всі страви
             setMeals(allMeals);
         } else {
-            // Якщо є текст у полі пошуку, відображаємо лише відповідні страви
             const filteredMeals = allMeals.filter(meal =>
                 meal.strMeal.toLowerCase().includes(query.toLowerCase())
             );
             setMeals(filteredMeals);
         }
-    }, [query, allMeals]); // Залежність від запиту та всіх страв
+    }, [query, allMeals]);
 
-    // Розрахунок індексів для пагінації
     const indexOfLastMeal = currentPage * itemsPerPage;
     const indexOfFirstMeal = indexOfLastMeal - itemsPerPage;
-    const currentMeals = meals.slice(indexOfFirstMeal, indexOfLastMeal); // Показуємо страви для поточної сторінки
+    const currentMeals = meals.slice(indexOfFirstMeal, indexOfLastMeal);
 
-    // Кількість сторінок
     const pageCount = Math.ceil(meals.length / itemsPerPage);
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(event.target.value); // Оновлюємо значення пошукового запиту
-        setCurrentPage(1); // Скидаємо сторінку на першу при новому пошуку
+        setQuery(event.target.value);
+        setCurrentPage(1);
     };
 
     const handlePageChange = (pageNumber: number) => {
@@ -87,18 +84,12 @@ const Recipes = () => {
                 )}
             </div>
 
-            {/* Пагінація */}
-            <div className="pagination">
-                {Array.from({ length: pageCount }, (_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => handlePageChange(index + 1)}
-                        className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
-            </div>
+
+            <Pagination
+                currentPage={currentPage}
+                pageCount={pageCount}
+                onPageChange={handlePageChange}
+            />
         </div>
     );
 };

@@ -4,7 +4,7 @@ import { mealServices } from "../../services/recipeService";
 import { IMeal } from "../../type/mealTypes";
 
 const RecipePage = () => {
-    const { idMeal } = useParams();  // Отримуємо idMeal з URL
+    const { idMeal } = useParams();
     const [recipe, setRecipe] = useState<IMeal | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -13,10 +13,10 @@ const RecipePage = () => {
         if (!idMeal) return;
 
         setLoading(true);
-        mealServices.getById(Number(idMeal))  // Переконуємось, що idMeal це число
+        mealServices.getById(Number(idMeal))
             .then((data) => {
                 if (data?.meals && data.meals.length) {
-                    setRecipe(data.meals[0]);  // Оновлюємо рецепт
+                    setRecipe(data.meals[0]);
                 } else {
                     setError("Recipe not found.");
                 }
